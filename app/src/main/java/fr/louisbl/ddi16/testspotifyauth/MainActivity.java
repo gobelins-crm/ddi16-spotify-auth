@@ -9,7 +9,15 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.spotify.sdk.android.authentication.AuthenticationClient;
+import com.spotify.sdk.android.authentication.AuthenticationRequest;
+import com.spotify.sdk.android.authentication.AuthenticationResponse;
+
 public class MainActivity extends AppCompatActivity {
+
+    private static final String CLIENT_ID = "00b7d581f8ef4bb184ee94d055659762"; // FIXME
+    private static final int REQUEST_CODE = 1001;
+    private static final String REDIRECT_URI = "ddi16testapp://callback"; // FIXME
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,8 +30,13 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                AuthenticationRequest.Builder builder =
+                        new AuthenticationRequest.Builder(CLIENT_ID, AuthenticationResponse.Type.TOKEN, REDIRECT_URI);
+
+                builder.setScopes(new String[]{"streaming"});
+                AuthenticationRequest request = builder.build();
+
+                AuthenticationClient.openLoginActivity(MainActivity.this, REQUEST_CODE, request);
             }
         });
     }
